@@ -2,8 +2,9 @@ use rand::Rng;
 use std::thread::{self, sleep};
 use std::time::Duration;
 
-const MAP_SIZE: usize = 20;
-const P_TRUE: f64 = 0.3;
+const MAP_SIZE: usize = 25;
+const P_TRUE: f64 = 0.2;
+const T_FRAME: u64 = 100;
 
 fn main() {
     let mut a: [[bool; MAP_SIZE]; MAP_SIZE] = [[false; MAP_SIZE]; MAP_SIZE];
@@ -78,10 +79,16 @@ fn main() {
             }
         }
 
+        if a == b {
+            break;
+        }
+
         a = b;
         b = [[false; MAP_SIZE]; MAP_SIZE];
-        thread::sleep(Duration::from_secs(1));
+        thread::sleep(Duration::from_millis(T_FRAME));
     }
+    print!("=== GAME OVER ===");
+    print_screen(a);
 }
 
 fn init_map(a: &mut [[bool; MAP_SIZE]; MAP_SIZE]) {
@@ -95,7 +102,14 @@ fn init_map(a: &mut [[bool; MAP_SIZE]; MAP_SIZE]) {
 }
 
 fn print_screen(a: [[bool; MAP_SIZE]; MAP_SIZE]) {
+    print!("╔");
+    for _ in 0..(MAP_SIZE * 2) {
+        print!("═");
+    }
+    print!("╗\n");
+
     for sub_arr in a {
+        print!("║");
         for element in sub_arr {
             if element == true {
                 print!("██");
@@ -103,7 +117,12 @@ fn print_screen(a: [[bool; MAP_SIZE]; MAP_SIZE]) {
                 print!("  ");
             }
         }
-        print!("\n");
+        print!("║\n");
     }
-    print!("\n");
+
+    print!("╚");
+    for _ in 0..(MAP_SIZE * 2) {
+        print!("═");
+    }
+    print!("╝\n");
 }
