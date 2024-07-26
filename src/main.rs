@@ -9,6 +9,7 @@ const T_FRAME: u64 = 100;
 fn main() {
     let mut a: [[bool; MAP_SIZE]; MAP_SIZE] = [[false; MAP_SIZE]; MAP_SIZE];
     let mut b: [[bool; MAP_SIZE]; MAP_SIZE] = [[false; MAP_SIZE]; MAP_SIZE];
+    let mut history: [[bool; MAP_SIZE]; MAP_SIZE] = [[false; MAP_SIZE]; MAP_SIZE];
 
     init_map(&mut a);
 
@@ -79,15 +80,16 @@ fn main() {
             }
         }
 
-        if a == b {
+        if a == b || b == history || a == history {
             break;
         }
 
+        history = a;
         a = b;
         b = [[false; MAP_SIZE]; MAP_SIZE];
         thread::sleep(Duration::from_millis(T_FRAME));
     }
-    print!("=== GAME OVER ===");
+    println!("=== GAME OVER ===");
     print_screen(a);
 }
 
