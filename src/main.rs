@@ -1,11 +1,16 @@
 use std::collections::{HashSet, VecDeque};
+use rand::Rng;
+
+const MAPSIZE: i128 = 1000;
+const N_CELLS: usize = 1000;
+const P_CELL: f64 = 0.8;
 
 fn main() {
-    let mut cells_alive_a: HashSet<(i128, i128)> = init_map();
+    let mut cells_alive_a: HashSet<(i128, i128)> = init_random_map(N_CELLS, MAPSIZE, MAPSIZE, P_CELL);
     let mut cells_alive_b: HashSet<(i128, i128)> = HashSet::new();
 
     let mut counter: u128 = 0;
-    
+
     loop {
         println!("n_iter = {}, n_alive = {}", counter, cells_alive_a.len());
 
@@ -35,6 +40,10 @@ fn main() {
             }
         }
 
+        if cells_alive_a.iter().len() == 0 {
+            break;
+        }
+        
         cells_alive_a = cells_alive_b.clone();
         cells_alive_b.clear();
         counter += 1;
@@ -75,4 +84,20 @@ fn init_map() -> HashSet<(i128, i128)> {
         (2, 2),
     ];
     initial_cells.into_iter().collect()
+}
+
+fn init_random_map(num_cells: usize, x_limit: i128, y_limit: i128, probability: f64) -> HashSet<(i128, i128)> {
+    let mut rng = rand::thread_rng();
+    let mut cells_alive = HashSet::new();
+
+    for _ in 0..num_cells {
+        let x = rng.gen_range(0..x_limit);
+        let y = rng.gen_range(0..y_limit);
+
+        if rng.gen_bool(probability) {
+            cells_alive.insert((x, y));
+        }
+    }
+
+    cells_alive
 }
